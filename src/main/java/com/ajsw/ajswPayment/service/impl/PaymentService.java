@@ -18,4 +18,17 @@ public class PaymentService implements IPaymentService {
 
         return _paymentRepository.findAll();
     }
+    public PaymentEntity createPayment(double price, String description){
+
+        try{
+            PaymentEntity payment = new PaymentEntity();
+            payment.setTotalPrice(price);
+            payment.setDescription(description);
+            return _paymentRepository.save(payment);
+        }catch (Exception ex){
+            System.out.println("PaymentService: createPayment => " +ex.getMessage());
+            return  null;
+        }
+
+    }
 }

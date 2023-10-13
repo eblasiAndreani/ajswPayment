@@ -1,15 +1,17 @@
 package com.ajsw.ajswPayment.controller;
 
+import com.ajsw.ajswPayment.domain.dto.RequestPaymentPostDto;
 import com.ajsw.ajswPayment.domain.dto.ResponseSansboxDTO;
 import com.ajsw.ajswPayment.domain.entity.PaymentEntity;
 import com.ajsw.ajswPayment.service.IMpPayment;
 import com.ajsw.ajswPayment.service.IPaymentService;
+import io.swagger.v3.oas.models.responses.ApiResponse;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 
 import javax.inject.Inject;
@@ -34,7 +36,7 @@ public class PaymentController {
 
     }
 
-    @GetMapping("/payment/getSandbox")
+    @GetMapping("/getSandbox")
     public ResponseEntity<ResponseSansboxDTO> getPaymentSandbox(double price, String description){
         String sandbox = _mpPayment.GetSandbox(price, description);
 
@@ -44,9 +46,13 @@ public class PaymentController {
         return ResponseEntity.ok(sandboxDTO);
     }
 
-    @PostMapping("/postPayment")
-    public ResponseEntity<String> postPayment(){
-        //_mpPayment
-        return null;
+    @PostMapping("/create")
+    public ResponseEntity<PaymentEntity> postPayment(@RequestBody RequestPaymentPostDto dates){
+
+        PaymentEntity payment = _paymentService.createPayment(dates.totalPrice, dates.description);
+        if ( payment == null){
+            return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(payment);
     }
 }

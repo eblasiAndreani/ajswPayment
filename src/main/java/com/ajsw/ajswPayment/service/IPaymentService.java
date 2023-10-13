@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface IPaymentService {
     public List<PaymentEntity> getAll();
+    public PaymentEntity createPayment(double price, String description);
 }
