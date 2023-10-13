@@ -15,7 +15,5 @@ public class SwaggerConfig {
                 .license(new License().name("Lincencia de Sistemas").url("www.bar.com"))
         );
     }
-
-
 }
 
