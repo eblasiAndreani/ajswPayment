@@ -7,7 +7,6 @@ import com.mercadopago.client.preference.PreferenceClient;
 import com.mercadopago.client.preference.PreferenceItemRequest;
 import com.mercadopago.client.preference.PreferenceRequest;
 import com.mercadopago.resources.preference.Preference;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -44,7 +43,7 @@ public class MpPayment implements IMpPayment {
             List<PreferenceItemRequest> items = new ArrayList<>();
             items.add(itemRequest);
 
-            //Se debe configurar las url a consumir cuando sucede cada accion.
+            //Se debe configurar las url a consumir cuando sucede cada accion.//
             PreferenceBackUrlsRequest backUrls = PreferenceBackUrlsRequest.builder()
                     .success("http://localhost:8080/v1/payment/pruebaMP")
                     .pending("http://localhost:8080/v1/payment/pruebaMP")

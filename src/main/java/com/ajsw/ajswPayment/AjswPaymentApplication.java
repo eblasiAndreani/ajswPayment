@@ -15,5 +15,4 @@ public class AjswPaymentApplication {
 		SpringApplication.run(AjswPaymentApplication.class, args);
 		LOGGER.info("the application is now running.....");
 	}
-
 }
