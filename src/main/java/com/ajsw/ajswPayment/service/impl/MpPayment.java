@@ -2,6 +2,7 @@ package com.ajsw.ajswPayment.service.impl;
 import com.ajsw.ajswPayment.service.IMpPayment;
 
 import com.mercadopago.MercadoPagoConfig;
+import com.mercadopago.client.preference.PreferenceBackUrlsRequest;
 import com.mercadopago.client.preference.PreferenceClient;
 import com.mercadopago.client.preference.PreferenceItemRequest;
 import com.mercadopago.client.preference.PreferenceRequest;
@@ -43,11 +44,22 @@ public class MpPayment implements IMpPayment {
             List<PreferenceItemRequest> items = new ArrayList<>();
             items.add(itemRequest);
 
-            PreferenceRequest preferenceRequest = PreferenceRequest.builder()
-                    .items(items).build();
+            //Se debe configurar las url a consumir cuando sucede cada accion.
+            PreferenceBackUrlsRequest backUrls = PreferenceBackUrlsRequest.builder()
+                    .success("http://localhost:8080/v1/payment/pruebaMP")
+                    .pending("http://localhost:8080/v1/payment/pruebaMP")
+                    .failure("http://localhost:8080/v1/payment/pruebaMP")
+                    .build();
+
+            PreferenceRequest request = PreferenceRequest
+                    .builder()
+                    .items(items)
+                    .backUrls(backUrls)
+                    .autoReturn("approved")
+                    .build();
             PreferenceClient client = new PreferenceClient();
 
-            preference = client.create(preferenceRequest);
+            preference = client.create(request);
 
         }catch (Exception ex) {
             System.out.println(ex.getMessage());

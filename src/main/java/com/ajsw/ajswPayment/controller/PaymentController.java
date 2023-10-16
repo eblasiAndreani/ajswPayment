@@ -33,8 +33,17 @@ public class PaymentController {
         }catch (Exception ex) {
             return null;
         }
-
     }
+    @GetMapping("/pruebaMP")
+    public ResponseEntity<String> getAllPayment(String payment_id, String status, String external_reference, String merchant_order_id){
+        try{
+            System.out.println("payment_id"+ payment_id + "status" +status + "external_reference: " +external_reference + "merchant_order_id: " + merchant_order_id);
+            return ResponseEntity.ok("OK");
+        }catch (Exception ex) {
+            return null;
+        }
+    }
+
 
     @GetMapping("/getSandbox")
     public ResponseEntity<ResponseSansboxDTO> getPaymentSandbox(double price, String description){
