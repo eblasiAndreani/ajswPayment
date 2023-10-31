@@ -1,4 +1,5 @@
 package com.ajsw.ajswPayment.service.impl;
+import com.ajsw.ajswPayment.domain.dto.Sandbox;
 import com.ajsw.ajswPayment.service.IMpPayment;
 
 import com.mercadopago.MercadoPagoConfig;
@@ -18,10 +19,13 @@ public class MpPayment implements IMpPayment {
     //@Value("${PROD_ACCESS_TOKEN}")
     public String token = "TEST-3647306127729066-101200-fd1f58df78adb7e176468375710187f7-1508099707";
 
-    public String GetSandbox(double price, String description){
+    public Sandbox GetSandbox(double price, String description){
         Preference preference = CreatePayment(price, description);
 
-        return preference.getSandboxInitPoint();
+        Sandbox sandboxDto = new Sandbox();
+        sandboxDto.setSandboxInit(preference.getSandboxInitPoint());
+
+        return sandboxDto;
     }
 
     private Preference CreatePayment(double price, String description){

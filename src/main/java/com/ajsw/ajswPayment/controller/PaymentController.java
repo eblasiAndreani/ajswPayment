@@ -1,20 +1,15 @@
 package com.ajsw.ajswPayment.controller;
 
-import com.ajsw.ajswPayment.domain.dto.RequestPaymentPostDto;
-import com.ajsw.ajswPayment.domain.dto.ResponseSansboxDTO;
-import com.ajsw.ajswPayment.domain.entity.PaymentEntity;
+import com.ajsw.ajswPayment.domain.dto.*;
 import com.ajsw.ajswPayment.service.IMpPayment;
 import com.ajsw.ajswPayment.service.IPaymentService;
-import io.swagger.v3.oas.models.responses.ApiResponse;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 
-import javax.inject.Inject;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -26,14 +21,20 @@ public class PaymentController {
     IPaymentService _paymentService;
 
     @GetMapping("/getAll")
-    public ResponseEntity<List<PaymentEntity>> getAllPayment(){
+    public ResponseEntity<ResponseGetAllDto> getAllPayment(){
+        ResponseGetAllDto responseGetAllDto = new ResponseGetAllDto();
         try{
-            List<PaymentEntity> a = _paymentService.getAll();
-            return ResponseEntity.ok(a);
+            List<Payment> payments = _paymentService.getAll();
+
+            responseGetAllDto.setBody(payments);
+
+            return ResponseEntity.ok(responseGetAllDto);
         }catch (Exception ex) {
-            return null;
+            responseGetAllDto.setErrors(new Errors(500, ex.getMessage(), Arrays.toString(ex.getStackTrace())));
+            return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseGetAllDto);
         }
     }
+
     @GetMapping("/pruebaMP")
     public ResponseEntity<String> getAllPayment(String payment_id, String status, String external_reference, String merchant_order_id){
         try{
@@ -44,24 +45,33 @@ public class PaymentController {
         }
     }
 
-
     @GetMapping("/getSandbox")
-    public ResponseEntity<ResponseSansboxDTO> getPaymentSandbox(double price, String description){
-        String sandbox = _mpPayment.GetSandbox(price, description);
+    public ResponseEntity<ResponseSandboxDto> getPaymentSandbox(double price, String description){
+        ResponseSandboxDto sandboxDTO = new ResponseSandboxDto();
+        try{
+            Sandbox sandbox = _mpPayment.GetSandbox(price, description);
 
-        ResponseSansboxDTO sandboxDTO = new ResponseSansboxDTO();
-        sandboxDTO.SandboxInit = sandbox;
+            sandboxDTO.setBody(sandbox);
 
-        return ResponseEntity.ok(sandboxDTO);
+            return ResponseEntity.ok(sandboxDTO);
+        }catch (Exception ex){
+            sandboxDTO.setErrors(new Errors(500, ex.getMessage(), Arrays.toString(ex.getStackTrace())));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(sandboxDTO);
+        }
     }
 
     @PostMapping("/create")
-    public ResponseEntity<PaymentEntity> postPayment(@RequestBody RequestPaymentPostDto dates){
+    public ResponseEntity<ResponsePaymentPostDto> postPayment(@RequestBody RequestPaymentPostDto dates){
+        ResponsePaymentPostDto responsePaymentPostDto = new ResponsePaymentPostDto();
+        try{
+            Payment payment = _paymentService.createPayment(dates.getTotalPrice(), dates.getDescription());
 
-        PaymentEntity payment = _paymentService.createPayment(dates.totalPrice, dates.description);
-        if ( payment == null){
-            return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            responsePaymentPostDto.setBody(payment);
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(responsePaymentPostDto);
+        }catch (Exception ex){
+            responsePaymentPostDto.setErrors(new Errors(500, ex.getMessage(), Arrays.toString(ex.getStackTrace())));
+            return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responsePaymentPostDto);
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(payment);
     }
 }

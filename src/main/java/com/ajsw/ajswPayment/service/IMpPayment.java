@@ -1,8 +1,8 @@
 package com.ajsw.ajswPayment.service;
 
-import org.springframework.context.annotation.Bean;
+import com.ajsw.ajswPayment.domain.dto.Sandbox;
 
 
 public interface IMpPayment {
-    public String GetSandbox(double importe, String descripcion);
+    public Sandbox GetSandbox(double importe, String descripcion);
 }
