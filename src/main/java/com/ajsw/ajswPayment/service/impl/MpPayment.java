@@ -49,9 +49,9 @@ public class MpPayment implements IMpPayment {
 
             //Se debe configurar las url a consumir cuando sucede cada accion.//
             PreferenceBackUrlsRequest backUrls = PreferenceBackUrlsRequest.builder()
-                    .success("http://localhost:8080/v1/payment/pruebaMP")
-                    .pending("http://localhost:8080/v1/payment/pruebaMP")
-                    .failure("http://localhost:8080/v1/payment/pruebaMP")
+                    .success("http://localhost:3000/reserva")
+                    .pending("http://localhost:3000/login")
+                    .failure("http://localhost:3000/buscar")
                     .build();
 
             PreferenceRequest request = PreferenceRequest
